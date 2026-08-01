@@ -24,6 +24,7 @@ from watchdog.events import FileSystemEventHandler
 
 from rs.core import (
     config,
+    util,
     pipe as p,
     voice_bin_process,
 )
@@ -270,7 +271,7 @@ class Form(QWidget):
             self._reset_tree(v)
 
     def open_dir(self):
-        subprocess.Popen(['explorer', self.ui.folderLineEdit.text().strip().replace('/', '\\')])
+        util.open_directory(Path(self.ui.folderLineEdit.text().strip()))
 
     def folderToolButton_clicked(self) -> None:
         w = self.ui.folderLineEdit

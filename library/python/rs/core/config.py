@@ -24,7 +24,7 @@ RESOLVE_SET_PATH = APP_SET_PATH.joinpath('resolve')
 if util.IS_WIN:
     PYTHON_INSTALL_PATH: Path = PYTHONW_EXE_PATH.parent
 else:
-    PYTHON_INSTALL_PATH: Path = ROOT_PATH.joinpath('bin', 'python-3')
+    PYTHON_INSTALL_PATH: Path = ROOT_PATH.joinpath('.venv')
 
 PYTHON_EXE_PATH = PYTHON_INSTALL_PATH.joinpath('python.exe')
 PYTHON_SCRIPTS_PATH = PYTHON_INSTALL_PATH.joinpath('Scripts')

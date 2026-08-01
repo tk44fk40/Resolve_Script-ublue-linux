@@ -7,7 +7,7 @@
 				Width = Input { Value = 1920, },
 				Height = Input { Value = 1080, },
 				UseFrameFormatSettings = Input { Value = 1, },
-				Font = Input { Value = "Meiryo", },
+				Font = Input { Value = "Noto Sans JP", },
 				Style = Input { Value = "Bold", },
 				Size = Input { Value = 0.09, },
 				VerticalJustificationNew = Input { Value = 3, },

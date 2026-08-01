@@ -25,6 +25,7 @@ from PySide6.QtGui import (
 
 from rs.core import (
     config,
+    util,
     pipe as p,
     srt,
 )
@@ -112,7 +113,7 @@ class MainWindow(QMainWindow):
         self.ui.actionExit.triggered.connect(self.close)
 
     def open_out_dir(self):
-        subprocess.Popen(['explorer', self.ui.outLineEdit.text().strip().replace('/', '\\')])
+        util.open_directory(Path(self.ui.outLineEdit.text().strip()))
 
     def set_tree_root(self):
         path = Path(self.ui.outLineEdit.text())

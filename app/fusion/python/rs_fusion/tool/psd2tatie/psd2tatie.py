@@ -533,7 +533,7 @@ class MainWindow(QMainWindow):
         if path != '':
             w.setText(path)
 
-    def set_combo_box_current_text(self, w):
+    def set_combo_box_current_text(self, w, *args):
         indexes = self.selection_model.selectedRows()
         if len(indexes) == 0:
             return

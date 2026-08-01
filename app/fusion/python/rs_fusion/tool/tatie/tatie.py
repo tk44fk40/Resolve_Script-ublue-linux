@@ -145,7 +145,7 @@ class MainWindow(QMainWindow):
         self.ui.addButtonButton.clicked.connect(self.add_button)
         self.ui.closeButton.clicked.connect(self.close)
 
-    def open_dir(self, d):
+    def open_dir(self, d, *args):
         if not d.is_dir():
             r = QMessageBox.warning(
                 self,

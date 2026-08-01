@@ -798,9 +798,6 @@ class MainWindow(QMainWindow):
                 audio_items.append(item)
 
         w = get_resolve_window(project.GetName())
-        if w is None and not util.IS_MAC:
-            self.add2log('DaVinci ResolveのWindowが見付かりません。', log.ERROR_COLOR)
-            return
         if util.IS_WIN:
             self.setWindowState(Qt.WindowMinimized)  # windowsの場合、最小化しないとウィンドウがactiveにならないので、
             self.setWindowState(Qt.WindowActive)  # 最小化してからactiveにする

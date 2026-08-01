@@ -15,6 +15,7 @@ from PySide6.QtWidgets import (
 
 from rs.core import (
     config,
+    util,
     pipe as p,
 )
 from rs.gui import (
@@ -297,19 +298,19 @@ class Form(QWidget):
     def open_file_dir(self):
         path = self.get_file_path()
         if path is not None:
-            subprocess.Popen(['explorer', str(path.parent)])
+            util.open_directory(path.parent)
 
     def open_filter_dir(self):
         path = self.get_filter_path()
         if path is not None:
             if path.parent.is_dir():
-                subprocess.Popen(['explorer', str(path.parent)])
+                util.open_directory(path.parent)
             else:
-                subprocess.Popen(['explorer', str(path.parent.parent)])
+                util.open_directory(path.parent.parent)
 
     @staticmethod
     def open_dir(path, _):
-        subprocess.Popen(['explorer', str(path)])
+        util.open_directory(path)
 
     def show(self):
         self.setting()
