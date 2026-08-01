@@ -1,0 +1,63 @@
+name: Create Linux Release
+
+on:
+  push:
+    tags:
+      - '[0-9]*' # 2.8.7 や 2.0.0 などの数字で始まるタグで起動 (vなし)
+  workflow_dispatch: # Web画面からの手動実行も可能
+
+permissions:
+  contents: write # Release公開権限
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. コードを取得
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. リリース用パッケージを作成
+      - name: Prepare Release Package
+        run: |
+          # バージョン名（例: 2.8.7）を取得
+          VERSION="${GITHUB_REF_NAME}"
+          if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
+            VERSION="custom-$(git rev-parse --short HEAD)"
+          fi
+
+          ARCHIVE_NAME="Resolve_Script-ublue-linux-${VERSION}.zip"
+          echo "ARCHIVE_NAME=${ARCHIVE_NAME}" >> $GITHUB_ENV
+
+          # パッケージ作成用の一時ディレクトリを作成
+          mkdir -p dist
+
+          # ① 配布に必要な共通フォルダ・ファイルをコピー
+          cp -r app bin Preset Scripts Templates data requirements.txt README.md LICENSE dist/
+
+          # ② for_linux ディレクトリ内のスクリプト群を直下に展開
+          cp -r for_linux/* dist/
+
+          # ③ シェルスクリプト群に実行権限を付与
+          chmod +x dist/*.sh
+
+          # ④ 不要な Python キャッシュ（__pycache__）があれば除去
+          find dist -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+          find dist -type f -name "*.pyc" -delete 2>/dev/null || true
+
+          # ⑤ dist の中身を ZIP アーカイブ化
+          cd dist
+          zip -r "../${ARCHIVE_NAME}" .
+          cd ..
+
+      # 3. GitHub Releases にアップロードして公開
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ env.ARCHIVE_NAME }}
+          name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
