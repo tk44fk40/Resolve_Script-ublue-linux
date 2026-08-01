@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # 「りぞりぷと」の起動スクリプトを（~/.local/bin/ へ）登録
-RESORIPT_SCRIPT="$(pwd)/resoript.sh"
+RESORIPT_SCRIPT="$(pwd)/りぞりぷと.sh"
 distrobox enter davincibox -- distrobox-export --bin "$RESORIPT_SCRIPT"
 
 # 「りぞりぷと」のランチャーを作成
-cat << EOF > ~/.local/share/applications/resoript.desktop
+cat << EOF > ~/.local/share/applications/りぞりぷと.desktop
 [Desktop Entry]
 Version=1.0
 Type=Application
@@ -13,7 +13,7 @@ Name=りぞりぷと
 GenericName=Resolve Script
 Comment=Resolve_Script is an automation script tool designed to streamline workflows in DaVinci Resolve. 
 Path=${HOME}
-Exec=${HOME}/.local/bin/resoript.sh
+Exec=${HOME}/.local/bin/りぞりぷと.sh
 Terminal=false
 Icon=${HOME}/.local/share/resolve/graphics/DV_Resolve.png
 StartupNotify=true

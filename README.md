@@ -133,17 +133,15 @@ DaVinci Resolve を [davincibox][davincibox_link] コンテナにインストー
 
 ## 使い方
 
-### りぞりぷとの起動[^3]
+### りぞりぷとの起動
 
 ```bash
-~/.local/bin/resoript.sh
+~/.local/bin/りぞりぷと.sh
 # ~/.local/bin が PATH に登録されていれば以下でも起動します
-resoript.sh
+りぞりぷと.sh
 ```
 
 アプリケーションランチャーの `りぞりぷと` からも起動できます。
-
-[^3]: `resoript.sh` は `りぞりぷと.sh` の別名コピーです。どちらを実行しても同じように起動します。
 
 ### DaVinci Resolve の起動
 
