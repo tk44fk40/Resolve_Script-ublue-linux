@@ -1,0 +1,54 @@
+name: Update Python Cache
+
+on:
+  push:
+    branches:
+      - ublue-linux
+      - main
+    paths:
+      - 'requirements.txt'
+  workflow_dispatch: # 手動実行用
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  update-cache:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10.11'
+
+      - name: Cache Windows Embeddable Python
+        id: cache-python-embed
+        uses: actions/cache@v4
+        with:
+          path: .cache/python-embed
+          key: ${{ runner.os }}-python-embed-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-python-embed-
+
+      - name: Build Python Embeddable Environment
+        shell: bash
+        run: |
+          if [ "${{ steps.cache-python-embed.outputs.cache-hit }}" != "true" ] || [ ! -d ".cache/python-embed" ]; then
+            echo "Building Python 3.10.11 Embeddable cache..."
+            mkdir -p .cache/python-embed
+            curl -sSL "https://www.python.org/ftp/python/3.10.11/python-3.10.11-embed-amd64.zip" -o python-embed.zip
+            unzip -q python-embed.zip -d .cache/python-embed
+            rm python-embed.zip
+
+            sed -i 's/#import site/import site/' .cache/python-embed/python310._pth
+
+            curl -sSL "https://bootstrap.pypa.io/get-pip.py" -o .cache/python-embed/get-pip.py
+            python .cache/python-embed/get-pip.py --no-warn-script-location
+            python -m pip install -r requirements.txt --target .cache/python-embed/Lib/site-packages
+            rm .cache/python-embed/get-pip.py
+          else
+            echo "Cache hit: Python 3.10.11 Embeddable environment is up to date."
+          fi
