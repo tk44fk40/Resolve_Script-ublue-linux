@@ -12,15 +12,18 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         include:
           - platform: linux
+            os: ubuntu-latest
             override_dir: for_linux
           - platform: mac
+            os: ubuntu-latest
             override_dir: for_mac
           - platform: win
+            os: windows-latest
             override_dir: ""
 
     steps:
@@ -71,12 +74,12 @@ jobs:
             chmod +x dist/*.sh dist/*.command 2>/dev/null || true
           fi
 
-          # ④ Windows固有処理 (Python 3.10.11 Embeddable の構築 ＋ Goランチャーのクロスコンパイル)
+          # ④ Windows固有処理 (Python 3.10.11 Embeddable の構築 ＋ Goランチャーのビルド)
           if [ "${{ matrix.platform }}" = "win" ]; then
             # (a) Python 3.10.11 Embeddable を取得して展開
             mkdir -p dist/bin/python-3.10.11
             curl -sSL "https://www.python.org/ftp/python/3.10.11/python-3.10.11-embed-amd64.zip" -o python-embed.zip
-            unzip -q python-embed.zip -d dist/bin/python-3.10.11
+            tar -xf python-embed.zip -C dist/bin/python-3.10.11
             rm python-embed.zip
 
             # import site を有効化
@@ -84,11 +87,11 @@ jobs:
 
             # pip のインストールと requirements.txt の依存構築
             curl -sSL "https://bootstrap.pypa.io/get-pip.py" -o dist/bin/python-3.10.11/get-pip.py
-            python3 dist/bin/python-3.10.11/get-pip.py --no-warn-script-location
-            python3 -m pip install -r requirements.txt --target dist/bin/python-3.10.11/Lib/site-packages
+            python dist/bin/python-3.10.11/get-pip.py --no-warn-script-location
+            python -m pip install -r requirements.txt --target dist/bin/python-3.10.11/Lib/site-packages
             rm dist/bin/python-3.10.11/get-pip.py
 
-            # (b) Go ランチャー (.exe) のクロスコンパイル
+            # (b) Go ランチャー (.exe) のビルド
             chmod +x data/app/launcher/build.sh
             ./data/app/launcher/build.sh data/app/launcher/launcher.go dist
             cp dist/launcher.exe dist/Resolve.exe
