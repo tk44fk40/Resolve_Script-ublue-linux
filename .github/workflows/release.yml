@@ -42,14 +42,21 @@ jobs:
           go-version: '1.22'
           cache: false
 
-      # 3. Python 3.10.11 環境のセットアップ (Windows依存パッケージ構築 ＋ キャッシュ有効化)
+      # 3. Python 3.10.11 環境のセットアップ (Runner上でのビルドスクリプト実行用)
       - name: Set up Python 3.10
         if: matrix.platform == 'win'
         uses: actions/setup-python@v5
         with:
           python-version: '3.10.11'
-          cache: 'pip'
-          cache-dependency-path: 'requirements.txt'
+
+      # 3.5. Windows 用 Embeddable Python フォルダのキャッシング
+      - name: Cache Windows Embeddable Python
+        if: matrix.platform == 'win'
+        id: cache-python-embed
+        uses: actions/cache@v4
+        with:
+          path: dist/bin/python-3.10.11
+          key: ${{ runner.os }}-python-embed-${{ hashFiles('requirements.txt') }}
 
       # 4. リリース用パッケージを作成
       - name: Prepare Release Package
@@ -87,20 +94,25 @@ jobs:
               cp -r AHK dist/
             fi
 
-            # (a) Python 3.10.11 Embeddable を取得して展開
-            mkdir -p dist/bin/python-3.10.11
-            curl -sSL "https://www.python.org/ftp/python/3.10.11/python-3.10.11-embed-amd64.zip" -o python-embed.zip
-            unzip -q python-embed.zip -d dist/bin/python-3.10.11
-            rm python-embed.zip
+            # (a) Python 3.10.11 Embeddable を取得して展開 (キャッシュヒット時はスキップ)
+            if [ "${{ steps.cache-python-embed.outputs.cache-hit }}" != "true" ]; then
+              echo "Cache miss: Setting up Python 3.10.11 Embeddable environment..."
+              mkdir -p dist/bin/python-3.10.11
+              curl -sSL "https://www.python.org/ftp/python/3.10.11/python-3.10.11-embed-amd64.zip" -o python-embed.zip
+              unzip -q python-embed.zip -d dist/bin/python-3.10.11
+              rm python-embed.zip
 
-            # import site を有効化
-            sed -i 's/#import site/import site/' dist/bin/python-3.10.11/python310._pth
+              # import site を有効化
+              sed -i 's/#import site/import site/' dist/bin/python-3.10.11/python310._pth
 
-            # pip のインストールと requirements.txt の依存構築
-            curl -sSL "https://bootstrap.pypa.io/get-pip.py" -o dist/bin/python-3.10.11/get-pip.py
-            python dist/bin/python-3.10.11/get-pip.py --no-warn-script-location
-            python -m pip install -r requirements.txt --target dist/bin/python-3.10.11/Lib/site-packages
-            rm dist/bin/python-3.10.11/get-pip.py
+              # pip のインストールと requirements.txt の依存構築
+              curl -sSL "https://bootstrap.pypa.io/get-pip.py" -o dist/bin/python-3.10.11/get-pip.py
+              python dist/bin/python-3.10.11/get-pip.py --no-warn-script-location
+              python -m pip install -r requirements.txt --target dist/bin/python-3.10.11/Lib/site-packages
+              rm dist/bin/python-3.10.11/get-pip.py
+            else
+              echo "Cache hit: Using cached Python 3.10.11 Embeddable environment."
+            fi
 
             # (b) Go ランチャー (.exe) のビルド
             chmod +x data/app/launcher/build.sh
