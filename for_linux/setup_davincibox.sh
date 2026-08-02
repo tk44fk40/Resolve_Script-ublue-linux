@@ -15,12 +15,12 @@ command -v brew >/dev/null 2>&1 || echo '\''eval "$(/home/linuxbrew/.linuxbrew/b
 
 # uv をインストール
 distrobox enter davincibox -- bash -c '
-brew install -y uv
+brew install -y -q uv
 command -v uv >/dev/null 2>&1 || echo '\''eval "$(uv generate-shell-completion bash)"'\'' >> $HOME/.bashrc
 '
 
 # フォントをインストール
-distrobox enter davincibox -- sudo dnf install google-noto-sans-jp-fonts google-noto-serif-jp-fonts
+distrobox enter davincibox -- sudo dnf install -y google-noto-sans-jp-fonts google-noto-serif-jp-fonts
 distrobox enter davincibox -- bash -c '
 mkdir -p /tmp/textar_install
 cd /tmp/textar_install

@@ -34,7 +34,7 @@ jobs:
           mkdir -p dist
 
           # ① 配布に必要な共通フォルダ・ファイルをコピー
-          cp -r app bin Preset Scripts Templates data requirements.txt README.md LICENSE dist/
+          cp -r app bin library Preset Scripts Templates data requirements.txt README.md LICENSE dist/
 
           # ② for_linux ディレクトリ内のスクリプト群を直下に展開
           cp -r for_linux/* dist/
