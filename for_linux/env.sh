@@ -17,3 +17,9 @@ export RS_FUSION_USER_PATH="$(pwd)/app/fusion/UserPath"
 # PATHではなく LD_LIBRARY_PATH で指定する
 export PYTHONHOME="${HOME}/.local/share/uv/python/cpython-3.10.11-linux-x86_64-gnu"
 export LD_LIBRARY_PATH="${PYTHONHOME}/lib:${LD_LIBRARY_PATH}"
+
+# 日本語入力 (Fcitx5 / Mozc) 設定
+export GTK_IM_MODULE=fcitx
+export QT_IM_MODULE=fcitx
+export XMODIFIERS=@im=fcitx
+
