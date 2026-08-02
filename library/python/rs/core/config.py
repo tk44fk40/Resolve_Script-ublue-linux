@@ -7,7 +7,7 @@ from pathlib import Path
 from rs.core import util
 
 ROOT_PATH: Path = Path(__file__).joinpath('..', '..', '..', '..', '..').resolve()
-LAUNCHER_CONFIG_FILE: Path = ROOT_PATH.joinpath('data', 'app', 'launcher.json')
+LAUNCHER_CONFIG_FILE: Path = ROOT_PATH.joinpath('data', 'app', 'りぞりぷと.json')
 
 PYTHONW_EXE_PATH: Path = ROOT_PATH.joinpath(
     json.loads(LAUNCHER_CONFIG_FILE.read_text(encoding='utf-8'))['program'].replace('\\', os.sep)

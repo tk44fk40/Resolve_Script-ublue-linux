@@ -1,9 +1,10 @@
-name: Create Linux Release
+name: Multi-OS Release
 
 on:
   push:
     tags:
       - '[0-9]*' # 2.8.7 や 2.0.0 などの数字で始まるタグで起動 (vなし)
+      - 'v[0-9]*' # v2.8.7 形式にも対応
   workflow_dispatch: # Web画面からの手動実行も可能
 
 permissions:
@@ -12,46 +13,88 @@ permissions:
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - platform: linux
+            override_dir: for_linux
+          - platform: mac
+            override_dir: for_mac
+          - platform: win
+            override_dir: ""
 
     steps:
       # 1. コードを取得
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. リリース用パッケージを作成
+      # 2. Go 言語環境のセットアップ (Windowsランチャーのクロスコンパイル用)
+      - name: Set up Go
+        if: matrix.platform == 'win'
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      # 3. リリース用パッケージを作成
       - name: Prepare Release Package
+        shell: bash
         run: |
-          # バージョン名（例: 2.8.7）を取得
-          VERSION="${GITHUB_REF_NAME}"
+          VERSION="${GITHUB_REF_NAME#v}"
           if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
             VERSION="custom-$(git rev-parse --short HEAD)"
           fi
 
-          ARCHIVE_NAME="Resolve_Script-ublue-linux-${VERSION}.zip"
+          ARCHIVE_NAME="Resolve_Script-${VERSION}_${matrix.platform}.zip"
           echo "ARCHIVE_NAME=${ARCHIVE_NAME}" >> $GITHUB_ENV
 
-          # パッケージ作成用の一時ディレクトリを作成
+          # パッケージ作成用の一時ディレクトリ dist を作成
           mkdir -p dist
 
           # ① 配布に必要な共通フォルダ・ファイルをコピー
           cp -r app bin library Preset Scripts Templates data requirements.txt README.md LICENSE dist/
 
-          # ② for_linux ディレクトリ内のスクリプト群を直下に展開
-          cp -r for_linux/* dist/
-
-          # ③ シェルスクリプト群に実行権限を付与
-          chmod +x dist/*.sh
-
-          # ④ 不要な Python キャッシュ（__pycache__）があれば除去
+          # ② 不要なソース・ビルドスクリプト・キャッシュを除去
+          rm -rf dist/data/app/launcher/launcher.go dist/data/app/launcher/build.sh 2>/dev/null || true
           find dist -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
           find dist -type f -name "*.pyc" -delete 2>/dev/null || true
+
+          # ③ OS固有の設定・スクリプトで上書き展開 (Linux / Mac)
+          if [ -n "${{ matrix.override_dir }}" ] && [ -d "${{ matrix.override_dir }}" ]; then
+            cp -r ${{ matrix.override_dir }}/* dist/
+            chmod +x dist/*.sh dist/*.command 2>/dev/null || true
+          fi
+
+          # ④ Windows固有処理 (Python 3.10.11 Embeddable の構築 ＋ Goランチャーのクロスコンパイル)
+          if [ "${{ matrix.platform }}" = "win" ]; then
+            # (a) Python 3.10.11 Embeddable を取得して展開
+            mkdir -p dist/bin/python-3.10.11
+            curl -sSL "https://www.python.org/ftp/python/3.10.11/python-3.10.11-embed-amd64.zip" -o python-embed.zip
+            unzip -q python-embed.zip -d dist/bin/python-3.10.11
+            rm python-embed.zip
+
+            # import site を有効化
+            sed -i 's/#import site/import site/' dist/bin/python-3.10.11/python310._pth
+
+            # pip のインストールと requirements.txt の依存構築
+            curl -sSL "https://bootstrap.pypa.io/get-pip.py" -o dist/bin/python-3.10.11/get-pip.py
+            python3 dist/bin/python-3.10.11/get-pip.py --no-warn-script-location
+            python3 -m pip install -r requirements.txt --target dist/bin/python-3.10.11/Lib/site-packages
+            rm dist/bin/python-3.10.11/get-pip.py
+
+            # (b) Go ランチャー (.exe) のクロスコンパイル
+            chmod +x data/app/launcher/build.sh
+            ./data/app/launcher/build.sh data/app/launcher/launcher.go dist
+            cp dist/launcher.exe dist/Resolve.exe
+            cp dist/launcher.exe dist/Fusion.exe
+            mv dist/launcher.exe dist/りぞりぷと.exe
+          fi
 
           # ⑤ dist の中身を ZIP アーカイブ化
           cd dist
           zip -r "../${ARCHIVE_NAME}" .
           cd ..
 
-      # 3. GitHub Releases にアップロードして公開
+      # 4. 終わったOSから順次 GitHub Release にアップロード
       - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
