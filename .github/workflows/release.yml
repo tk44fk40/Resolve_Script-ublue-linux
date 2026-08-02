@@ -101,7 +101,11 @@ jobs:
 
           # ⑤ dist の中身を ZIP アーカイブ化
           cd dist
-          zip -r "../${ARCHIVE_NAME}" .
+          if command -v zip >/dev/null 2>&1; then
+            zip -r "../${ARCHIVE_NAME}" .
+          else
+            7z a "../${ARCHIVE_NAME}" .
+          fi
           cd ..
 
       # 5. 作成された ZIP パッケージを一時 Artifact としてアップロード
