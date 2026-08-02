@@ -57,6 +57,8 @@ jobs:
         with:
           path: dist/bin/python-3.10.11
           key: ${{ runner.os }}-python-embed-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-python-embed-
 
       # 4. リリース用パッケージを作成
       - name: Prepare Release Package
