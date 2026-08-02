@@ -13,7 +13,7 @@
 				Red1 = Input { Value = 0, },
 				Green1 = Input { Value = 0, },
 				Blue1 = Input { Value = 0, },
-				Font = Input { Value = "Textar", },
+				Font = Input { Value = "MS PGothic", },
 				Style = Input { Value = "Regular", },
 				Size = Input { Value = 0.04, },
 				VerticalTopCenterBottom = Input { Value = 1, },
