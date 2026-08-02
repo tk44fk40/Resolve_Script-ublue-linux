@@ -113,7 +113,7 @@ DaVinci Resolve を [davincibox][davincibox_link] コンテナにインストー
 3. 以下のスクリプトを実行し、コンテナ内に Python 仮想環境（`.venv`）を作成し、依存パッケージをインストールします。
 
   ```bash
-  distrobox enter davincibox -- ./setup_python.sh
+  ./setup_python.sh
   ```
 
 ---
