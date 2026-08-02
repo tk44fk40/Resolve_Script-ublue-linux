@@ -44,7 +44,7 @@ jobs:
             VERSION="custom-$(git rev-parse --short HEAD)"
           fi
 
-          ARCHIVE_NAME="Resolve_Script-${VERSION}_${matrix.platform}.zip"
+          ARCHIVE_NAME="Resolve_Script-${VERSION}_${{ matrix.platform }}.zip"
           echo "ARCHIVE_NAME=${ARCHIVE_NAME}" >> $GITHUB_ENV
 
           # パッケージ作成用の一時ディレクトリ dist を作成
