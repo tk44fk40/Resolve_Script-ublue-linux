@@ -4,7 +4,7 @@
 distrobox upgrade davincibox
 
 # 必要なパッケージをインストール
-distrobox enter davincibox -- sudo dnf install -y gcc gcc-c++ python3-devel alsa-plugins-pulseaudio
+distrobox enter davincibox -- sudo dnf install -y gcc gcc-c++ python3-devel alsa-lib-devel alsa-plugins-pulseaudio
 distrobox enter davincibox -- sudo dnf install -y xset xrandr wmctrl xdotool fcitx5-qt5 jq
 
 # brew をインストール
