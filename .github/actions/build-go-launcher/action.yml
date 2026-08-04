@@ -1,0 +1,28 @@
+name: 'Build Go Launcher'
+description: 'Windows 用 Go ランチャーをコンパイル・キャッシュします'
+runs:
+  using: "composite"
+  steps:
+    - name: Cache Windows Launcher Executable
+      id: cache-launcher-exe
+      uses: actions/cache@v4
+      with:
+        path: .cache/launcher-bin
+        key: ${{ runner.os }}-launcher-exe-${{ hashFiles('data/app/launcher/launcher.go', 'data/app/launcher/build.sh') }}
+
+    - name: Set up Go
+      if: steps.cache-launcher-exe.outputs.cache-hit != 'true'
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.22'
+        cache: false
+
+    - name: Build Launcher Executable Cache
+      if: steps.cache-launcher-exe.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        echo "Cache miss: Building Windows Launcher Executable cache..."
+        rm -rf .cache/launcher-bin
+        mkdir -p .cache/launcher-bin
+        chmod +x data/app/launcher/build.sh
+        ./data/app/launcher/build.sh data/app/launcher/launcher.go .cache/launcher-bin
