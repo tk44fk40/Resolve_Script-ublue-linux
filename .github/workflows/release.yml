@@ -106,6 +106,7 @@ jobs:
 
               # import site を有効化
               sed -i 's/#import site/import site/' .cache/python-embed/python310._pth
+              cp data/app/launcher/sitecustomize.py .cache/python-embed/
 
               # pip のインストールと requirements.txt の依存構築
               curl -sSL "https://bootstrap.pypa.io/get-pip.py" -o .cache/python-embed/get-pip.py
@@ -119,6 +120,7 @@ jobs:
             # キャッシュ済み Python 環境を dist/bin にコピー
             mkdir -p dist/bin
             cp -r .cache/python-embed dist/bin/python-3.10.11
+            cp data/app/launcher/sitecustomize.py dist/bin/python-3.10.11/
 
             # (b) Go ランチャー (.exe) のビルド
             chmod +x data/app/launcher/build.sh

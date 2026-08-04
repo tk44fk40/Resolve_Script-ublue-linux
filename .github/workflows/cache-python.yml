@@ -44,6 +44,7 @@ jobs:
             rm python-embed.zip
 
             sed -i 's/#import site/import site/' .cache/python-embed/python310._pth
+            cp data/app/launcher/sitecustomize.py .cache/python-embed/
 
             curl -sSL "https://bootstrap.pypa.io/get-pip.py" -o .cache/python-embed/get-pip.py
             python .cache/python-embed/get-pip.py --no-warn-script-location
