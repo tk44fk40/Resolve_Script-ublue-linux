@@ -2,6 +2,6 @@
 
 cd "$(dirname "$0")"
 
-source bin/python-3/bin/activate
+source "./env.sh"
 
-python bin/launcher.py
+uv run bin/launcher.py

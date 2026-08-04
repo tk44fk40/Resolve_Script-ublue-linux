@@ -71,24 +71,31 @@ class MainWindow(QMainWindow):
             return None
         return get_resolve_window(project.GetName())
 
-    def activate_resolve(self):
+    def activate_resolve(self) -> bool:
         w = self.get_resolve_window()
-        activate_window(w)
+        if not activate_window(w):
+            from PySide6.QtWidgets import QMessageBox
+            QMessageBox.warning(self, "エラー", "DaVinci Resolve のウィンドウが見つからないか、アクティブ化に失敗しました。")
+            return False
         time.sleep(0.1)
+        return True
 
     def razor_test(self):
         c = self.get_data()
-        self.activate_resolve()
+        if not self.activate_resolve():
+            return
         c.razor()
 
     def deselect_all_test(self):
         c = self.get_data()
-        self.activate_resolve()
+        if not self.activate_resolve():
+            return
         c.deselect_all()
 
     def active_timeline_panel_test(self):
         c = self.get_data()
-        self.activate_resolve()
+        if not self.activate_resolve():
+            return
         c.active_timeline_panel()
 
     def set_data(self, c: sc.Data):

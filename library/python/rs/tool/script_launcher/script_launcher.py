@@ -21,6 +21,7 @@ from PySide6.QtWidgets import (
 
 from rs.core import (
     config,
+    util,
 )
 from rs.gui import appearance
 from rs.gui.frame_layout import Form as FrameLayout
@@ -158,7 +159,7 @@ class MainWindow(QWidget):
 
     @staticmethod
     def open_dir(path, _):
-        subprocess.Popen(['explorer', str(path)])
+        util.open_directory(path)
 
 
 def run() -> None:

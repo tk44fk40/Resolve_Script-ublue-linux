@@ -539,7 +539,7 @@ class MainWindow(QMainWindow):
         text = self.ui.lyricsTextEdit.toPlainText()
         QApplication.clipboard().setText(text)
 
-    def get_open_file_name(self, w, type_name: str) -> None:
+    def get_open_file_name(self, w, type_name: str, *args) -> None:
         path, _ = QFileDialog.getOpenFileName(
             self,
             f'Select {type_name.upper()} File',
@@ -568,7 +568,7 @@ class MainWindow(QMainWindow):
             if lab_file.is_file():
                 self.ui.srcLabLineEdit.setText(str(lab_file).replace('\\', '/'))
 
-    def get_save_file_name(self, w, type_name: str) -> None:
+    def get_save_file_name(self, w, type_name: str, *args) -> None:
         path, _ = QFileDialog.getSaveFileName(
             self,
             'save as',

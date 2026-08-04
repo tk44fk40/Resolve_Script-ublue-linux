@@ -3,16 +3,28 @@
 		Template = TextPlus {
 			CtrlWZoom = false,
 			Inputs = {
-				GlobalOut = Input { Value = 149, },
 				Width = Input { Value = 1920, },
 				Height = Input { Value = 1080, },
 				UseFrameFormatSettings = Input { Value = 1, },
-				Font = Input { Value = "Meiryo", },
-				Style = Input { Value = "Bold", },
-				Size = Input { Value = 0.09, },
+				Center = Input { Value = { 0, 0 }, },
+				Name1 = Input { Value = "TEXT", },
+				Name2 = Input { Value = "BG", },
+				Enabled2 = Input { Value = 1, },
+				Red1 = Input { Value = 0, },
+				Green1 = Input { Value = 0, },
+				Blue1 = Input { Value = 0, },
+				Font = Input { Value = "Textar", },
+				Style = Input { Value = "Regular", },
+				Size = Input { Value = 0.04, },
+				VerticalTopCenterBottom = Input { Value = 1, },
 				VerticalJustificationNew = Input { Value = 3, },
+				HorizontalLeftCenterRight = Input { Value = -1, },
 				HorizontalJustificationNew = Input { Value = 3, },
-				Filter = Input { Value = "StyledText\nWidth\nHeight\nUseFrameFormatSettings\nFilter", },
+				Filter = Input { Value = "Width\nHeight\nUseFrameFormatSettings\nFilter", },
+				ElementShape2 = Input { Value = 2, },
+				Level2 = Input { Value = 0, },
+				Green2 = Input { Value = 1, },
+				Blue2 = Input { Value = 1, },
 			},
 			ViewInfo = OperatorInfo { Pos = { 220, 49.5 } },
 			UserControls = ordered() {
@@ -106,7 +118,7 @@ end
 					ICS_ControlPage = "Tools",
 					INP_External = false,
 					INP_Passive = true,
-					INP_Default = "StyledText\nWidth\nHeight\nUseFrameFormatSettings\nFilter",
+					INP_Default = "Width\nHeight\nUseFrameFormatSettings\nFilter",
 				}
 			}
 		}
