@@ -30,8 +30,14 @@ sudo mkdir -p /usr/share/fonts/
 sudo cp textar-font/textar.ttf /usr/share/fonts/
 cd ~
 rm -rf /tmp/textar_install
-fc-cache -fv
-fc-list : family | grep -i "Noto Sans CJK JP"
+'
+
+# ユーザーフォントディレクトリを認識させる
+# Resolve が ~/.local/share/fonts も参照するようにしておく
+distrobox enter davincibox -- bash -c '
+sudo ln -sfn ~/.local/share/fonts /usr/share/fonts/user-fonts
+sudo fc-cache -fv
+fc-list : family | grep -i "Noto Sans JP"
 fc-list : family | grep -i "Noto Serif CJK JP"
 fc-list : family | grep -i "Textar"
 '
