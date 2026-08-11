@@ -256,7 +256,7 @@ class MainWindow(QMainWindow):
 
         w = get_resolve_window(project.GetName())
         if w is None and not util.IS_MAC:
-            self.add2log('DaVinci ResolveのWindowが見付かりません。')
+            self.add2log('DaVinci ResolveのWindowが見付かりません。', log.ERROR_COLOR)
             return
 
         data = self.get_data()
@@ -340,7 +340,7 @@ class MainWindow(QMainWindow):
 
         w = get_resolve_window(project.GetName())
         if w is None and not util.IS_MAC:
-            self.add2log('DaVinci ResolveのWindowが見付かりません。')
+            self.add2log('DaVinci ResolveのWindowが見付かりません。', log.ERROR_COLOR)
             return
 
         data = self.get_data()

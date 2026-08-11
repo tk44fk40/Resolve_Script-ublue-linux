@@ -11,6 +11,7 @@ from PySide6.QtCore import (
 from PySide6.QtWidgets import (
     QApplication,
     QMainWindow,
+    QMessageBox,
 )
 
 from rs.core import (
@@ -194,11 +195,13 @@ class MainWindow(QMainWindow):
 
         w = get_resolve_window(project.GetName())
         if w is None and not util.IS_MAC:
-            print(
+            msg = (
                 'DaVinci Resolve window not found.'
                 if self.lang_code == lang.Code.en else
                 'DaVinci ResolveのWindowが見付かりません。'
             )
+            print(msg)
+            QMessageBox.warning(self, 'Warning', msg)
             return
 
         # clear text+
